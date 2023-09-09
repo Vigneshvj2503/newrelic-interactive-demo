@@ -1,26 +1,13 @@
-# This is just a dummy service to populate the Kubernetes cluster explorer
-apiVersion: v1
-kind: Service
-metadata:
-  name: game-frontend 
-  labels:
-    app: game
-    tier: frontend
-spec:
-  type: LoadBalancer
-  ports:
-  - port: 80
-    targetPort: 3000
-  selector:
-    app: game 
-    tier: frontend
----
-apiVersion:  apps/v1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: game-frontend
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      app: game
+      tier: frontend
   template:
     metadata:
       labels:
@@ -30,8 +17,6 @@ spec:
       containers:
       - name: frontend
         image: docker.io/spolfliet/newrelic-interactive-demo-frontend:latest
-        #image: polfliet/newrelic-interactive-demo-frontend:latest
-        #imagePullPolicy: Never 
         resources:
           requests:
             cpu: 100m
@@ -53,10 +38,5 @@ spec:
               fieldPath: metadata.name
         - name: GET_HOSTS_FROM
           value: dns
-          # If your cluster config does not include a dns service, then to
-          # instead access environment variables to find service host
-          # info, comment out the 'value: dns' line above, and uncomment the
-          # line below:
-          # value: env      
         ports:
           - containerPort: 3000
