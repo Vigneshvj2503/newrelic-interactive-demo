@@ -1,10 +1,11 @@
+---
 apiVersion: v1
 kind: ServiceAccount
 metadata:
   name: nr-kube-events
   namespace: default
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: nr-kube-events
@@ -13,7 +14,7 @@ rules:
     resources: ["events"]
     verbs: ["get", "watch", "list"]
 ---
-apiVersion: rbac.authorization.k8s.io/v1beta1
+apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: nr-kube-events
@@ -41,7 +42,7 @@ metadata:
   name: nr-kube-events
   namespace: default
 ---
-apiVersion: apps/v1beta2
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: nr-kube-events
@@ -77,15 +78,15 @@ spec:
           image: newrelic/k8s-events-forwarder:1.5.31
           resources:
             limits:
-              memory: 128Mi
-              cpu: 500m
+              memory: "128Mi"
+              cpu: "500m"
             requests:
-              memory: 128Mi
-              cpu: 100m
+              memory: "128Mi"
+              cpu: "100m"
           securityContext:
             privileged: false
-            runAsUser: 1000 # nr-kube-events
-            runAsGroup: 2000 # nr-kube-events
+            runAsUser: 1000
+            runAsGroup: 2000
             runAsNonRoot: false
             allowPrivilegeEscalation: false
             readOnlyRootFilesystem: true
@@ -96,9 +97,7 @@ spec:
               valueFrom:
                 secretKeyRef:
                   name: newrelic-secret
-                  key: new_relic_license_key          
-            #- name: "NRIA_VERBOSE"
-          #  value: "1"
+                  key: new_relic_license_key
           volumeMounts:
             - mountPath: /var/db/newrelic-infra/data
               name: tmpfs-data
