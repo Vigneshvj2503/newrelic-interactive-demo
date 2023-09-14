@@ -1,10 +1,13 @@
----
-apiVersion: extensions/v1beta1
+apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: game-auth
 spec:
   replicas: 3
+  selector:
+    matchLabels:
+      app: game
+      tier: auth
   template:
     metadata:
       labels:
@@ -12,16 +15,17 @@ spec:
         tier: auth
     spec:
       containers:
-      - name: auth 
-        image: busybox
-        command: ["/bin/sh", "-ec", "while :; do echo '.'; sleep 5 ; done"]
+      - name: auth
+        image: your-application-image:latest
+        ports:
+        - containerPort: 3000
         resources:
           requests:
-            cpu: 50m
-            memory: 50Mi
-          limits:
             cpu: 100m
-            memory: 200Mi
+            memory: 256Mi
+          limits:
+            cpu: 500m
+            memory: 512Mi
         env:
         - name: NEW_RELIC_LICENSE_KEY
           valueFrom:
@@ -29,17 +33,40 @@ spec:
               name: newrelic-secret
               key: new_relic_license_key
         - name: NEW_RELIC_APP_NAME
-          value: FutureStack Game - Auth
+          value: YourApp - Auth
         - name: MY_POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
         - name: GET_HOSTS_FROM
           value: dns
-          # If your cluster config does not include a dns service, then to
-          # instead access environment variables to find service host
-          # info, comment out the 'value: dns' line above, and uncomment the
-          # line below:
-          # value: env      
-        ports:
-          - containerPort: 3000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: game-auth
+spec:
+  selector:
+    app: game
+    tier: auth
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: game-auth-ingress
+spec:
+  rules:
+  - host: your-domain.com
+    http:
+      paths:
+      - path: /auth
+        pathType: Prefix
+        backend:
+          service:
+            name: game-auth
+            port:
+              number: 80
