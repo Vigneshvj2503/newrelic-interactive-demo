@@ -1,4 +1,4 @@
-apiVersion: apps/v1
+apiVersion: extensions/v1beta1
 kind: Deployment
 metadata:
   name: newrelic-metadata-injection-deployment
@@ -7,11 +7,9 @@ metadata:
     app: newrelic-metadata-injection
 spec:
   replicas: 1
-  selector:
-    matchLabels:
-      app: newrelic-metadata-injection
   template:
     metadata:
+      namespace: default
       labels:
         app: newrelic-metadata-injection
     spec:
@@ -50,7 +48,7 @@ spec:
   selector:
     app: newrelic-metadata-injection
 ---
-apiVersion: admissionregistration.k8s.io/v1
+apiVersion: admissionregistration.k8s.io/v1beta1
 kind: MutatingWebhookConfiguration
 metadata:
   name: newrelic-metadata-injection-cfg
@@ -63,13 +61,15 @@ webhooks:
       name: newrelic-metadata-injection-svc
       namespace: default
       path: "/mutate"
-    caBundle: "LS0tLS1CRUdJTiBDRVJUSUZJQ0FURS0tLS0tCk1JSURCVENDQWUyZ0F3SUJBZ0lJYU82UTBhZHJUOW93RFFZSktvWklodmNOQVFFTEJRQXdGVEVUTUJFR0ExVUUKQXhNS2EzVmlaWEp1WlhSbGN6QWVGdzB5TXpBNU1UWXhNVEUxTVRaYUZ3MHpNekE1TVRNeE1URTFNVFphTUJVeApFekFSQmdOVkJBTVRDbXQxWW1WeWJtVjBaWE13Z2dFaU1BMEdDU3FHU0liM0RRRUJBUVVBQTRJQkR3QXdnZ0VLCkFvSUJBUUNkSmhNUlBwbjhHNy9DN0NyNlVnaEFyVmZqa3RwTTRlc2RrQVYvTURVOFlaMVlTTm52ZlVrN3pjeG0KeUF1QVFWRFlmaTNQOHRRZmo5NmRVRlJLb1lrMW1oTE5heFhvMDNzakhaeG9WK2RzSllEcXE4M1JvNkJLaDJBNApUdzc2bDRTZ2RacEI0c0xDcEg3VG9RUWpXRGJrTk96NUsvakJkRk80cVZLVlorUGJhbTNCUkJzT3creVFBNXloCjFqTkx2NHlXWmdlbTBSRng1VURuajVReHYzL0pTTDFCR29ERi9vVlgyVFVJS2pzSTg5YTljNm9Dd2dheGlWakUKZFpXeDlzRUFYSjdCaVRaOWNMTWtyS2dOZGRja3lkRnJkbXJGUmpySDBNVjdWMUV3cCtQcy9idUc1ajk5UWRLUApOZzViYzI1akZPWHQvbW16aWJjaURvZDM4dmdwQWdNQkFBR2pXVEJYTUE0R0ExVWREd0VCL3dRRUF3SUNwREFQCkJnTlZIUk1CQWY4RUJUQURBUUgvTUIwR0ExVWREZ1FXQkJSSC91ZlRZdldsTXZlam1GYnBLMU1uUWdCSW1EQVYKQmdOVkhSRUVEakFNZ2dwcmRXSmxjbTVsZEdWek1BMEdDU3FHU0liM0RRRUJDd1VBQTRJQkFRQnhuN21Tb3lHMQo3QVBQOUlGRlBjNTR3RFg4Mm5HVm51N3E2NFVpcmd3b3hvaEY2ZUpKbHZFdVNQaC9MMTZsaUI4ZkNnNkc2cWFFCnkrVlJHZi9iYyt3TVZIZ2RPT3hMZTQ2MG5VdDg4SXNFSFRYMmEySzZjc3NGYmF5TFZsSkZNYXNJbVg0OEg1TEMKaWQ3TmN6aXYwUlBhTm5yem05QUROakRlR2tWbGlLSEt2TXZJYldiWVMyRGRwUFhoY3p3cGlEdm0rTHRaZ1VVSApFUkFaRVpaTXpkcDR4L1JLSytsWmdHanlzYzc4ZFEzUTB1T3RoYzRuNkRDVDRaUE9oMDN0amZGT2tBOE4rSHVaCk9BeWF0Qm5OWlRRakh3SDExR29pTXNZbTNEOEI4ci9kUHdSUmV6N0FQajU2N0ttWDlHTW9UY3VoVkZjYWNZZ3kKaW5QMVNKcVJLdVBqCi0tLS0tRU5EIENFUlRJRklDQVRFLS0tLS0K"
+    caBundle: "TFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVUkNWRU5EUVdVeVowRjNTVUpCWjBsSllVODJVVEJoWkhKVU9XOTNSRkZaU2t0dldrbG9kbU5PUVZGRlRFSlJRWGRHVkVWVVRVSkZSMEV4VlVVS1FYaE5TMkV6Vm1sYVdFcDFXbGhTYkdONlFXVkdkekI1VFhwQk5VMVVXWGhOVkVVeFRWUmFZVVozTUhwTmVrRTFUVlJOZUUxVVJURk5WRnBoVFVKVmVBcEZla0ZTUW1kT1ZrSkJUVlJEYlhReFdXMVdlV0p0VmpCYVdFMTNaMmRGYVUxQk1FZERVM0ZIVTBsaU0wUlJSVUpCVVZWQlFUUkpRa1IzUVhkblowVkxDa0Z2U1VKQlVVTmtTbWhOVWxCd2JqaEhOeTlETjBOeU5sVm5hRUZ5Vm1acWEzUndUVFJsYzJSclFWWXZUVVJWT0ZsYU1WbFRUbTUyWmxWck4zcGplRzBLZVVGMVFWRldSRmxtYVROUU9IUlJabW81Tm1SVlJsSkxiMWxyTVcxb1RFNWhlRmh2TUROemFraGFlRzlXSzJSelNsbEVjWEU0TTFKdk5rSkxhREpCTkFwVWR6YzJiRFJUWjJSYWNFSTBjMHhEY0VnM1ZHOVJVV3BYUkdKclRrOTZO
   rules:
   - operations: [ "CREATE" ]
     apiGroups: [""]
     apiVersions: ["v1"]
     resources: ["pods"]
-  failurePolicy: Ignore
+  sideEffects: None # Specify the side effects (None or NoneOnDryRun)
+  admissionReviewVersions: [ "v1", "v1beta1" ] # Specify the admission review versions
+failurePolicy: Ignore
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -83,6 +83,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRole
 metadata:
   name: newrelic-metadata-injection-cluster-role
+  namespace: default
   labels:
     app: newrelic-metadata-injection
 rules:
@@ -106,6 +107,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: newrelic-metadata-injection-cluster-role-binding
+  namespace: default
   labels:
     app: newrelic-metadata-injection
 roleRef:
@@ -121,10 +123,13 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: newrelic-metadata-setup
+  namespace: default
   labels:
     app: newrelic-metadata-setup
 spec:
   template:
+    metadata:
+      namespace: default
     spec:
       serviceAccountName: newrelic-metadata-injection-service-account
       containers:
