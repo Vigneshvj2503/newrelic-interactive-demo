@@ -7,9 +7,11 @@ metadata:
     app: newrelic-metadata-injection
 spec:
   replicas: 1
+  selector:
+    matchLabels:
+      app: newrelic-metadata-injection
   template:
     metadata:
-      namespace: default
       labels:
         app: newrelic-metadata-injection
     spec:
@@ -48,7 +50,7 @@ spec:
   selector:
     app: newrelic-metadata-injection
 ---
-apiVersion: admissionregistration.k8s.io/v1beta1
+apiVersion: admissionregistration.k8s.io/v1
 kind: MutatingWebhookConfiguration
 metadata:
   name: newrelic-metadata-injection-cfg
@@ -61,14 +63,14 @@ webhooks:
       name: newrelic-metadata-injection-svc
       namespace: default
       path: "/mutate"
-    caBundle: "TFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVUkNWRU5EUVdVeVowRjNTVUpCWjBsSllVODJVVEJoWkhKVU9XOTNSRkZaU2t0dldrbG9kbU5PUVZGRlRFSlJRWGRHVkVWVVRVSkZSMEV4VlVVS1FYaE5TMkV6Vm1sYVdFcDFXbGhTYkdONlFXVkdkekI1VFhwQk5VMVVXWGhOVkVVeFRWUmFZVVozTUhwTmVrRTFUVlJOZUUxVVJURk5WRnBoVFVKVmVBcEZla0ZTUW1kT1ZrSkJUVlJEYlhReFdXMVdlV0p0VmpCYVdFMTNaMmRGYVUxQk1FZERVM0ZIVTBsaU0wUlJSVUpCVVZWQlFUUkpRa1IzUVhkblowVkxDa0Z2U1VKQlVVTmtTbWhOVWxCd2JqaEhOeTlETjBOeU5sVm5hRUZ5Vm1acWEzUndUVFJsYzJSclFWWXZUVVJWT0ZsYU1WbFRUbTUyWmxWck4zcGplRzBLZVVGMVFWRldSRmxtYVROUU9IUlJabW81Tm1SVlJsSkxiMWxyTVcxb1RFNWhlRmh2TUROemFraGFlRzlXSzJSelNsbEVjWEU0TTFKdk5rSkxhREpCTkFwVWR6YzJiRFJUWjJSYWNFSTBjMHhEY0VnM1ZHOVJVV3BYUkdKclRrOTZO"
+    caBundle: "TFMwdExTMUNSVWRKVGlCRFJWSlVTVVpKUTBGVVJTMHRMUzB0Q2sxSlNVUkNWRU5EUVdVeVowFjNTVUpCWjBsSllVODJVVEJoWkhKVU9XOTNSRkZaU2t0dldrbG9kbU5PUVZGRlRFSlJRWGRHVkVWVVRVSkZSMEV4VlVVS1FYaE5TMkV6Vm1sYVdFcDFXbGhTYkdONlFXVkdkekI1VFhwQk5VMVVXWGhOVkVVeFRWUmFZVVozTUhwTmVrRTFUVlJOZUUxVVJURk5WRnBoVFVKVmVBcEZla0ZTUW1kT1ZrSkJUVlJEYlhReFdXMVdlV0p0VmpCYVdFMTNaMmRGYVUxQk1FZERVM0ZIVTBsaU0wUlJSVUpCVVZWQlFUUkpRa1IzUVhkblowVkxDa0Z2U1VKQlVVTmtTbWhOVWxCd2JqaEhOeTlETjBOeU5sVm5hRUZ5Vm1acWEzUndUVFJsYzJSclFWWXZUVVJWT0ZsYU1WbFRUbTUyWmxWck4zcGplRzBLZVVGMVFWRldSRmxtYVROUU9IUlJabW81Tm1SVlJsSkxiMWxyTVcxb1RFNWhlRmh2TUROemFraGFlRzlXSzJSelNsbEVjWEU0TTFKdk5rSkxhREpCTkFwVWR6YzJiRFJUWjJSYWNFSTBjMHhEY0VnM1ZHOVJVV3BYUkdKclRrOTZO"
   rules:
   - operations: [ "CREATE" ]
     apiGroups: [""]
     apiVersions: ["v1"]
     resources: ["pods"]
   sideEffects: None # Specify the side effects (None or NoneOnDryRun)
-  admissionReviewVersions: [ "v1", "v1beta1" ] # Specify the admission review versions
+  admissionReviewVersions: [ "v1" ] # Use "v1" for more recent Kubernetes versions
 failurePolicy: Ignore
 ---
 apiVersion: v1
