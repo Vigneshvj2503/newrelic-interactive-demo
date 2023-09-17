@@ -71,7 +71,6 @@ webhooks:
     resources: ["pods"]
   sideEffects: None # Specify the side effects (None or NoneOnDryRun)
   admissionReviewVersions: [ "v1" ] # Use "v1" for more recent Kubernetes versions
-failurePolicy: Ignore
 ---
 apiVersion: v1
 kind: ServiceAccount
