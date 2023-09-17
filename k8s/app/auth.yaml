@@ -1,31 +1,29 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: game-auth
+  name: game-frontend
 spec:
   replicas: 3
   selector:
     matchLabels:
       app: game
-      tier: auth
+      tier: frontend
   template:
     metadata:
       labels:
         app: game
-        tier: auth
+        tier: frontend
     spec:
       containers:
-      - name: auth
-        image: your-application-image:latest
-        ports:
-        - containerPort: 3000
+      - name: frontend
+        image: docker.io/spolfliet/newrelic-interactive-demo-frontend:latest
         resources:
           requests:
             cpu: 100m
-            memory: 256Mi
+            memory: 200Mi
           limits:
-            cpu: 500m
-            memory: 512Mi
+            cpu: 200m
+            memory: 500Mi
         env:
         - name: NEW_RELIC_LICENSE_KEY
           valueFrom:
@@ -33,22 +31,24 @@ spec:
               name: newrelic-secret
               key: new_relic_license_key
         - name: NEW_RELIC_APP_NAME
-          value: YourApp - Auth
+          value: FutureStack Game - Frontend
         - name: MY_POD_NAME
           valueFrom:
             fieldRef:
               fieldPath: metadata.name
         - name: GET_HOSTS_FROM
           value: dns
+        ports:
+          - containerPort: 3000
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: game-auth
+  name: game-frontend
 spec:
   selector:
     app: game
-    tier: auth
+    tier: frontend
   ports:
   - protocol: TCP
     port: 80
@@ -57,16 +57,16 @@ spec:
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: game-auth-ingress
+  name: game-frontend-ingress
 spec:
   rules:
   - host: your-domain.com
     http:
       paths:
-      - path: /auth
+      - path: /app
         pathType: Prefix
         backend:
           service:
-            name: game-auth
+            name: game-frontend
             port:
               number: 80
