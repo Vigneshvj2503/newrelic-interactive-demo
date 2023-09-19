@@ -15,11 +15,11 @@ USER_AGENT="Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/
 HIT_COUNT=0
 
 while true; do
-    # Use 'curl' to send an HTTP request
-    /usr/bin/time curl -A "$USER_AGENT" -sI "http://$HOST:$PORT" > /dev/null
+    # Use 'curl' to send an HTTP request and store the output in a variable
+    response=$(curl -A "$USER_AGENT" -sI "http://$HOST:$PORT")
 
-    # Check the exit status of 'curl'
-    if [ $? -eq 0 ]; then
+    # Check if the request was successful by looking for "HTTP/1.1 200 OK" in the response
+    if [[ "$response" == *"HTTP/1.1 200 OK"* ]]; then
         # Increment the hit count
         ((HIT_COUNT++))
         echo "Request $HIT_COUNT successful"
