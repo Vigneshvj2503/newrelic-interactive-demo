@@ -1,17 +1,27 @@
 #!/bin/bash
-if [ "$#" -ne 3 ]; then
-    echo "Specify the hostname, port and sleep time, for example: ./loadgen.sh adc1ada716a8211e9a59d060b5087792-676580527.eu-west-1.elb.amazonaws.com 3000 0.2"
-    exit
+
+# Check for the correct number of arguments
+if [ "$#" -ne 2 ]; then
+    echo "Specify the hostname and port, for example: ./loadgen.sh ae18d6ea916684ebab4f2aaff0c49234-1581885670.us-east-1.elb.amazonaws.com 3000"
+    exit 1
 fi
 
-HOST=$1
-PORT=$2
-SLEEP=$3
+# Set variables
+HOST="$1"
+PORT="$2"
 USER_AGENT="Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Mobile Safari/537.36"
-  
-for i in {1..10000}
-do
-        echo -n "$i - "
-        /usr/bin/time curl -A "$USER_AGENT" http://$HOST:$PORT/action &
-        sleep $SLEEP
+
+while true; do
+    # Use 'curl' to send an HTTP request
+    /usr/bin/time curl -A "$USER_AGENT" -sI "http://$HOST:$PORT" > /dev/null
+
+    # Check the exit status of 'curl'
+    if [ $? -eq 0 ]; then
+        echo "Request successful"
+    else
+        echo "Request failed"
+    fi
+
+    # Sleep for 1 second
+    sleep 1
 done
