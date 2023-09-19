@@ -20,9 +20,9 @@ while true; do
 
     # Check the exit status of 'curl'
     if [ $? -eq 0 ]; then
-        echo "Request successful"
         # Increment the hit count
         ((HIT_COUNT++))
+        echo "Request $HIT_COUNT successful"
     else
         echo "Request failed"
     fi
