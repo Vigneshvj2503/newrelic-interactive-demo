@@ -11,6 +11,9 @@ HOST="$1"
 PORT="$2"
 USER_AGENT="Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Mobile Safari/537.36"
 
+# Initialize hit count
+HIT_COUNT=0
+
 while true; do
     # Use 'curl' to send an HTTP request
     /usr/bin/time curl -A "$USER_AGENT" -sI "http://$HOST:$PORT" > /dev/null
@@ -18,10 +21,15 @@ while true; do
     # Check the exit status of 'curl'
     if [ $? -eq 0 ]; then
         echo "Request successful"
+        # Increment the hit count
+        ((HIT_COUNT++))
     else
         echo "Request failed"
     fi
 
-    # Sleep for 1 second
-    sleep 1
+    # Sleep for 0.1 seconds (100 milliseconds)
+    sleep 0.1
 done
+
+# Print the hit count when the script is manually stopped
+trap "echo 'Total hits: $HIT_COUNT'; exit" INT
