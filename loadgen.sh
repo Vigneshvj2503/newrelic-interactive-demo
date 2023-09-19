@@ -1,14 +1,13 @@
 #!/bin/bash
 
 # Check for the correct number of arguments
-if [ "$#" -ne 2 ]; then
-    echo "Specify the hostname and port, for example: ./loadgen.sh ae18d6ea916684ebab4f2aaff0c49234-1581885670.us-east-1.elb.amazonaws.com 3000"
+if [ "$#" -ne 1 ]; then
+    echo "Specify the hostname, for example: ./loadgen.sh ae18d6ea916684ebab4f2aaff0c49234-1581885670.us-east-1.elb.amazonaws.com"
     exit 1
 fi
 
 # Set variables
 HOST="$1"
-PORT="$2"
 USER_AGENT="Mozilla/5.0 (Linux; Android 5.0; SM-G900P Build/LRX21T) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Mobile Safari/537.36"
 
 # Initialize hit count
@@ -16,7 +15,7 @@ HIT_COUNT=0
 
 while true; do
     # Use 'curl' to send an HTTP request and store the output in a variable
-    response=$(curl -A "$USER_AGENT" -sI "http://$HOST:$PORT")
+    response=$(curl -A "$USER_AGENT" -I "http://$HOST")
 
     # Check if the request was successful by looking for "HTTP/1.1 200 OK" in the response
     if [[ "$response" == *"HTTP/1.1 200 OK"* ]]; then
